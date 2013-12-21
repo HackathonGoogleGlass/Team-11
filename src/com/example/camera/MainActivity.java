@@ -34,14 +34,14 @@ public class MainActivity extends Activity {
       
     }
     
-    private void SetCardView(){
-        createCards();
-        mCardScrollView = new CardScrollView(this);
-        ExampleCardScrollAdapter adapter = new ExampleCardScrollAdapter();
-        mCardScrollView.setAdapter(adapter);
-        mCardScrollView.activate();
-        setContentView(mCardScrollView);
-    }
+//    private void SetCardView(){
+//        createCards();
+//        mCardScrollView = new CardScrollView(this);
+//        ExampleCardScrollAdapter adapter = new ExampleCardScrollAdapter();
+//        mCardScrollView.setAdapter(adapter);
+//        mCardScrollView.activate();
+//        setContentView(mCardScrollView);
+//    }
     
     private void createCards() {
         mCards = new ArrayList<Card>();
