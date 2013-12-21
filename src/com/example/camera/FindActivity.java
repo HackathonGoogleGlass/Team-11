@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.speech.RecognizerIntent;
 
 public class FindActivity extends Activity
@@ -39,7 +40,8 @@ public class FindActivity extends Activity
 		
 		List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 		
-		File picturesDir = new File(getExternalFilesDir(null).getAbsolutePath());
+		File picturesDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + 
+																						"\\StuffFinder");
 		File[] files = picturesDir.listFiles(new PictureFileNameFilter(results.get(0)));
 		File file = files[0];
 		

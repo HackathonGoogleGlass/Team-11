@@ -2,11 +2,14 @@ package com.example.camera;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.speech.RecognizerIntent;
@@ -16,13 +19,15 @@ public class SaveActivity extends Activity {
 
 	private static final int TAKE_PICTURE_REQUEST = 112;
 	private static final int GET_SPEECH=211;
-	private String _imageFileName;
+	
+	private URI  _fileUri;
+	//private String _imageFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        getSpeech();
+        takePicture();
 
     }
 
@@ -34,27 +39,35 @@ public class SaveActivity extends Activity {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if (requestCode == TAKE_PICTURE_REQUEST && resultCode == RESULT_OK) {
-	       // String picturePath = data.getStringExtra(CameraManager.EXTRA_PICTURE_FILE_PATH);
+	    if (requestCode == TAKE_PICTURE_REQUEST && resultCode == RESULT_OK) 
+	    {
+	    	
+	     //   Bundle bundle = data.ge getIntent().getExtras();
+			Uri a = data.getData();
+			Uri b = a;
+//	        if(data.getda(MediaStore.EXTRA_OUTPUT)!= null)
+//	        {
+//	            //TODO here get the string stored in the string variable and do 
+//	                    // setText() on userName 
+//	        	Uri uri  = (Uri)data.get(MediaStore.EXTRA_OUTPUT);
+//	        }
+	    	
 	       // processPictureWhenReady(picturePath);
-	        try 
-	        {
-		        createImageFile(); 	
-	        }
-	        catch(IOException e)
-	        {
-	        	//??
-	        }
+	    	//Uri uri = (Uri)data.getExtras().get(MediaStore.EXTRA_OUTPUT);
+	    	//_fileUri =  uri;
+	    	 getSpeech();
+
 
 	    }
 	    else if(requestCode == GET_SPEECH && resultCode == RESULT_OK)
 	    {
 			List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			_imageFileName = results.get(0);
-	    	
-			
-			
-	        takePicture();
+			//_imageFileName = results.get(0);	 
+			    	 
+			File from = new File(_fileUri);
+			//File to = new File(sdcard,"to.txt");
+			//from.renameTo(results.get(0));
+	
 	    }
 	    super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -77,25 +90,28 @@ public class SaveActivity extends Activity {
     }
     
 	private void takePicture() {
-	    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	    startActivityForResult(intent, TAKE_PICTURE_REQUEST);
+		String  a = Environment.getExternalStorageDirectory().getAbsolutePath() + "\\StuffFinder";
+		Uri uri = Uri.parse(a);
+	    Intent photoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	    photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+	    startActivityForResult(photoIntent, TAKE_PICTURE_REQUEST);
 	}
 	
-
-	private File createImageFile() throws IOException {
-	    // Create an image file name
-
-	    //String imageFileName = "JPEG_" + timeStamp + "_";
-	    File storageDir = getExternalFilesDir(null);
-	    File image = File.createTempFile(
-	    	_imageFileName,  /* prefix */
-	        ".jpg",         /* suffix */
-	        storageDir      /* directory */
-	    );
-	    //image.createNewFile();
-	    // Save a file: path for use with ACTION_VIEW intents
-	    return image;
-	}
+//
+//	private File createImageFile() throws IOException {
+//	    // Create an image file name
+//
+//	    //String imageFileName = "JPEG_" + timeStamp + "_";
+//	    File storageDir = getExternalFilesDir(null);
+//	    File image = File.createTempFile(
+//	    	_imageFileName,  /* prefix */
+//	        ".jpg",         /* suffix */
+//	        storageDir      /* directory */
+//	    ); 
+//	    //image.createNewFile();
+//	    // Save a file: path for use with ACTION_VIEW intents
+//	    return image;
+//	}
 	
 //	private void processPictureWhenReady(final String picturePath) {
 //	    final File pictureFile = new File(picturePath);
