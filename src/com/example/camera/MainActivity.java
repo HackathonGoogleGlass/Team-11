@@ -43,29 +43,29 @@ public class MainActivity extends Activity {
 //        setContentView(mCardScrollView);
 //    }
     
-    private void createCards() {
-        mCards = new ArrayList<Card>();
-
-        Card card;
-
-        card = new Card(this);
-        card.setText(PicturesDirPath);
-       // card.setInfo("I'm the footer!");
-        mCards.add(card);
-        
-        File dir = new File(PicturesDirPath);
-        File[] filelist = dir.listFiles();
-        for (File f : filelist)
-        {
-        	Card tempCard = new Card(this);
-        	tempCard.setText(f.getName());
-        	Uri uri = Uri.fromFile(f);
-        	tempCard.addImage(uri);
-        	
-        	// first card is working
-        	mCards.add(tempCard);
-        }
-    }
+//    private void createCards() {
+//        mCards = new ArrayList<Card>();
+//
+//        Card card;
+//
+//        card = new Card(this);
+//        card.setText(PicturesDirPath);
+//       // card.setInfo("I'm the footer!");
+//        mCards.add(card);
+//        
+//        File dir = new File(PicturesDirPath);
+//        File[] filelist = dir.listFiles();
+//        for (File f : filelist)
+//        {
+//        	Card tempCard = new Card(this);
+//        	tempCard.setText(f.getName());
+//        	Uri uri = Uri.fromFile(f);
+//        	tempCard.addImage(uri);
+//        	
+//        	// first card is working
+//        	mCards.add(tempCard);
+//        }
+//    }
 	
 //	private void takePicture() {
 //	    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

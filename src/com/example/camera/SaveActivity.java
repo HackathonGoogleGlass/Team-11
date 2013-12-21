@@ -11,23 +11,23 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.Menu;
 import android.speech.RecognizerIntent;
+import android.util.Log;
+import android.view.Menu;
 
 
 public class SaveActivity extends Activity {
 
 	private static final int TAKE_PICTURE_REQUEST = 112;
-	private static final int GET_SPEECH=211;
-	
-	private URI  _fileUri;
-	//private String _imageFileName;
+	private static final int GET_SPEECH=211;	
+	//private URI  _fileUri;
+	private  String _imageFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) 
     {
         super.onCreate(savedInstanceState);
-        takePicture();
+        getSpeech();
 
     }
 
@@ -42,32 +42,21 @@ public class SaveActivity extends Activity {
 	    if (requestCode == TAKE_PICTURE_REQUEST && resultCode == RESULT_OK) 
 	    {
 	    	
-	     //   Bundle bundle = data.ge getIntent().getExtras();
-			Uri a = data.getData();
-			Uri b = a;
-//	        if(data.getda(MediaStore.EXTRA_OUTPUT)!= null)
-//	        {
-//	            //TODO here get the string stored in the string variable and do 
-//	                    // setText() on userName 
-//	        	Uri uri  = (Uri)data.get(MediaStore.EXTRA_OUTPUT);
-//	        }
-	    	
-	       // processPictureWhenReady(picturePath);
-	    	//Uri uri = (Uri)data.getExtras().get(MediaStore.EXTRA_OUTPUT);
-	    	//_fileUri =  uri;
-	    	 getSpeech();
-
-
+//   Bundle bundle = data.ge getIntent().getExtras();
+//			Uri a = data.getData();
+//			Uri b = a;
+//			try
+//			{
+//				createImageFile();
+//			}
+//			catch(IOException e)
+//			{}
 	    }
 	    else if(requestCode == GET_SPEECH && resultCode == RESULT_OK)
 	    {
 			List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-			//_imageFileName = results.get(0);	 
-			    	 
-			File from = new File(_fileUri);
-			//File to = new File(sdcard,"to.txt");
-			//from.renameTo(results.get(0));
-	
+			_imageFileName = results.get(0);	 		
+			takePicture();
 	    }
 	    super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -84,34 +73,45 @@ public class SaveActivity extends Activity {
 		Intent voiceIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
     	voiceIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
     	voiceIntent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech Demo");
-    	SaveActivity.this.startActivityForResult(voiceIntent, GET_SPEECH);	
-    	
-    	
+    	SaveActivity.this.startActivityForResult(voiceIntent, GET_SPEECH);	 	
     }
     
 	private void takePicture() {
-		String  a = Environment.getExternalStorageDirectory().getAbsolutePath() + "\\StuffFinder";
-		Uri uri = Uri.parse(a);
+	
+		Uri uri=Uri.fromFile(getOutputMediaFile());
+		
 	    Intent photoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	    photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+	    
+	    photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri); // set the image file name
+
 	    startActivityForResult(photoIntent, TAKE_PICTURE_REQUEST);
 	}
-	
-//
-//	private File createImageFile() throws IOException {
-//	    // Create an image file name
-//
-//	    //String imageFileName = "JPEG_" + timeStamp + "_";
-//	    File storageDir = getExternalFilesDir(null);
-//	    File image = File.createTempFile(
-//	    	_imageFileName,  /* prefix */
-//	        ".jpg",         /* suffix */
-//	        storageDir      /* directory */
-//	    ); 
-//	    //image.createNewFile();
-//	    // Save a file: path for use with ACTION_VIEW intents
-//	    return image;
-//	}
+	    
+    /** Create a File for saving an image or video */
+    private File getOutputMediaFile(){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"StuffFinder");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d("StuffFinder", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        File mediaFile;
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+            		_imageFileName + ".jpg");
+
+
+        return mediaFile;
+    }
 	
 //	private void processPictureWhenReady(final String picturePath) {
 //	    final File pictureFile = new File(picturePath);
